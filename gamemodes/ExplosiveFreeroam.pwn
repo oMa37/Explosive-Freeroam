@@ -19276,4 +19276,4 @@ StopLoopingAnim(playerid)
 {
     PlayerUsingLoopingAnim[playerid] = 0;
     ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, 0, 0, 0, 0, 0);
-}
+} 
