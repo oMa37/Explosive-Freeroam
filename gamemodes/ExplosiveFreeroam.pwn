@@ -1672,7 +1672,7 @@ public OnGameModeInit()
     objectlist = LoadModelSelectionMenu("objects.txt");
 
     mysql_tquery(mysql, "CREATE TABLE IF NOT EXISTS `playersdata` (\
-        `ID` int(11) NOT NULL,\
+        `ID` int(11) NOT NULL AUTO_INCREMENT,\
         `PlayerName` varchar(25) NOT NULL,\
         `Password` varchar(129) NOT NULL,\
         `IP` varchar(17) NOT NULL,\
