@@ -1679,7 +1679,7 @@ public OnGameModeInit()
         `Online` int(5) NOT NULL,\
         `LastSeen` TIMESTAMP NOT NULL,\
         `RegisteredOn` varchar(26) NOT NULL,\
-        `AutoLogin` int(11) NOT NULL,\
+        `AutoLogin` int(11) NOT NULL default 0,\
         `Level` int(11) NOT NULL,\
         `Money` int(11) NOT NULL,\
         `UGC` int(11) NOT NULL,\
