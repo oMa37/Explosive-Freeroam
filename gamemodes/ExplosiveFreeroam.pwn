@@ -17,6 +17,7 @@
     #include <callbacks>
     #include <sscanf2>
 
+    #include <regex>
     #include <mSelection>
     #include <foreach>
     #include <CMD>
@@ -44,6 +45,7 @@
     #define                         SCM                                 SendClientMessage
     #define                         DelayKick(%0)                       SetTimerEx("DelayedKick", 300, 0, "d", %0)
     #define                         IsPlayerAFK(%0)                     IsPaused[(%0)]
+    #define                         IsValidEmail(%1)                    regex_match(%1, "[a-zA-Z0-9_\\.]+@([a-zA-Z0-9\\-]+\\.)+[a-zA-Z]{2,4}")
 
   //Administration
     #define                         MAX_CAR_SPAWNS                      100
@@ -58,25 +60,6 @@
     #define                         Days(%0)                            %0 * 86400
     #define                         Weeks(%0)                           %0 * 604800
     #define                         Month(%0)                           %0 * 2592000 
-
-  //Dialogs
-    #define                         DIALOG_OPMS                         5163
-	#define 						DIALOG_COLORS						18550
-	#define 						DIALOG_HELP							18650
-	#define 						DIALOG_CMDS 						18684
-    #define                         DIALOG_INV                          18713
-    #define                         DIALOG_RADIOS                       N+23
-    #define                         CRADIO                              5774
-    #define                         DIALOG_SHOW_INFO                    13337
-    #define                         WEAP_DIALOG                         148
-    #define                         N                                   69
-    #define                         DIALOG_LOGIN                        1370
-    #define                         DIALOG_REGISTER                     1371
-    #define                         DIALOG_PASS                         66
-    #define                         DIALOG_STATS                        4577
-    #define                         WARN                                4874
-    #define                         DIALOG_DM                           345
-    #define                         DIALOGS                             2000
 
   //Colors
     #define                         red                                 0xFF0000FF
@@ -279,6 +262,20 @@ forward OnPlayerLeaveGangZone(playerid, zone);
     new Float:SelfieX[MAX_PLAYERS];
     new Float:SelfieY[MAX_PLAYERS];
     new Float:SelfieZ[MAX_PLAYERS];
+  //Animation Library
+    new AnimationLibraries[][] = 
+    {
+        "AIRPORT", "Attractors", "BAR", "BASEBALL", "BD_FIRE", "BEACH", "benchpress", "BF_injection", "BIKED", "BIKEH", "BIKELEAP",
+        "BIKES", "BIKEV", "BIKE_DBZ", "BLOWJOBZ", "BMX", "BOMBER", "BOX", "BSKTBALL", "BUDDY", "BUS", "CAMERA", "CAR", "CARRY", "CAR_CHAT",
+        "CASINO", "CHAINSAW", "CHOPPA", "CLOTHES", "COACH", "COLT45", "COP_AMBIENT", "COP_DVBYZ", "CRACK", "CRIB", "DAM_JUMP", "DANCING",
+        "DEALER", "DILDO", "DODGE", "DOZER", "DRIVEBYS", "FAT", "FIGHT_B", "FIGHT_C", "FIGHT_D", "FIGHT_E", "FINALE", "FINALE2", "FLAME",
+        "Flowers", "FOOD", "Freeweights", "GANGS", "GHANDS", "GHETTO_DB", "goggles", "GRAFFITI", "GRAVEYARD", "GRENADE", "GYMNASIUM", "HAIRCUTS",
+        "HEIST9", "INT_HOUSE", "INT_OFFICE", "INT_SHOP", "JST_BUISNESS", "KART", "KISSING", "KNIFE", "LAPDAN1", "LAPDAN2", "LAPDAN3", "LOWRIDER",
+        "MD_CHASE", "MD_END", "MEDIC", "MISC", "MTB", "MUSCULAR", "NEVADA", "ON_LOOKERS", "OTB", "PARACHUTE", "PARK", "PAULNMAC", "ped", "PLAYER_DVBYS",
+        "PLAYIDLES", "POLICE", "POOL", "POOR", "PYTHON", "QUAD", "QUAD_DBZ", "RAPPING", "RIFLE", "RIOT", "ROB_BANK", "ROCKET", "RUSTLER", "RYDER",
+        "SCRATCHING", "SHAMAL", "SHOP", "SHOTGUN", "SILENCED", "SKATE", "SMOKING", "SNIPER", "SPRAYCAN", "STRIP", "SUNBATHE", "SWAT", "SWEET", "SWIM",
+        "SWORD", "TANK", "TATTOOS", "TEC", "TRAIN", "TRUCK", "UZI", "VAN", "VENDING", "VORTEX", "WAYFARER", "WEAPONS", "WUZI", "SAMP"
+    };
   //Vehicles Stuff
     new Float: vEnterPos[MAX_PLAYERS][4];
     new VehicleNames[212][] =
@@ -421,6 +418,66 @@ forward OnPlayerLeaveGangZone(playerid, zone);
 
 //---------------: ENUMs :---------------//
 
+#define DIALOG_SELL_MONEY   2000
+#define DIALOG_VEHICLES     3500
+#define DIALOG_OPMS         4000
+#define DIALOG_SHOP         4500
+#define DIALOG_EVENTS       5000
+#define DIALOGS             5500
+#define DIALOG_AMMU         6000
+
+enum _:dialogOne {
+
+    DIALOG_PROPERTIES = 1,
+    DIALOG_HOUSES,
+    DIALOG_COLORS,
+    DIALOG_HELP,
+    DIALOG_CMDS,
+    DIALOG_INV,
+    DIALOG_RADIOS,
+    CRADIO,
+    DIALOG_SHOW_INFO,
+    WEAP_DIALOG,
+    N,
+    DIALOG_LOGIN,
+    DIALOG_REGISTER,
+    DIALOG_EMAIL,
+    DIALOG_PASS,
+    DIALOG_STATS,
+    WARN,
+    DIALOG_DM,
+    DIALOG_GANGLIST,
+    DIALOG_GANGSLIST,
+    DIALOG_PARKOURS,
+    DIALOG_SKYDIVE,
+    DIALOG_DERBY,
+    DIALOG_TDM,
+    DIALOG_SKIN_TAKE,
+    DIALOG_SKIN_BUY,
+    DIALOG_BUY_PROPERTY,
+    DIALOG_BUY_HOUSE,
+    DIALOG_HOUSE_MENU,
+    DIALOG_HOUSE_LOCK,
+    DIALOG_SAFE_MENU,
+    DIALOG_SAFE_TAKE,
+    DIALOG_SAFE_PUT,
+    DIALOG_GUNS_MENU,
+    DIALOG_GUNS_TAKE,
+    DIALOG_VISITORS_MENU,
+    DIALOG_VISITORS,
+    DIALOG_KEYS_MENU,
+    DIALOG_KEYS,
+    DIALOG_SAFE_HISTORY,
+    DIALOG_MY_KEYS,
+    DIALOG_FRIENDS,
+    DIALOG_SEEDS,
+    DIALOG_BUY_VEHICLE,
+    DIALOG_TITLES,
+    DIALOG_ATTACHMENTS,
+    DIALOG_ATTACHMENTS_EDIT,
+    DIALOG_ATTACHMENTS_SAVE,
+}
+
 enum PlayerData
 {
     //MySQL
@@ -431,6 +488,7 @@ enum PlayerData
     PlayerName[MAX_PLAYER_NAME],
     Password[129],
     IP[16],
+    Email[35],
     Level,
     Money,
     Kills,
@@ -470,6 +528,8 @@ enum PlayerData
     JumpExpire,
     Friends,
     vehLimit,
+    playerColor[16],
+    textColor[16],
 
     //Non-MySQL
     InDM,
@@ -523,7 +583,6 @@ new Jumping[MAX_PLAYERS],
 
 //Event System
 
-#define DIALOG_EVENTS   1853
 #define TEAM_ONE    55
 #define TEAM_TWO    56
 
@@ -652,9 +711,6 @@ new
 
 //Gangs
 
-#define DIALOG_GANGLIST 585
-#define DIALOG_GANGSLIST 586
-
 #define     GROVE       		    1
 #define     BALLAS      		    2
 #define     VAGOS       		    3
@@ -677,26 +733,22 @@ new
 #define TURF_STATE_NORMAL           (0)
 #define TURF_STATE_ATTACKED         (1)
 
-#define TURF_REQUIRED_KILLS         (0)
 #define TURF_REQUIRED_PLAYERS       (1)
 #define TURF_REQUIRED_CAPTURETIME   (3 * 60 * 1000)
-#define TURF_REQUIRED_PROVOKETIME   (1 * 1000)
 #define COLOR_CHANGE_ALPHA(%1)      ((%1 & ~0xFF) | (clamp(100, 0x00, 0xFF)))
 
-enum e_TEAM 
+enum eTeam 
 {
     teamName[35],
     teamColor
 };
 
-enum e_TURF 
+enum eTurf 
 {
     turfName[35],
     turfOwner,
     turfAttacker,
     Float:turfPos[4],
-    turfOwnerKills,
-    turfAttackerKills,
     turfState,
     turfTimer,
     turfAttackTimer,
@@ -705,7 +757,7 @@ enum e_TURF
     areaId
 };
 
-new const g_Team[][e_TEAM] = {
+new const g_Team[][eTeam] = {
     {"Freeroam", 0xFFFFFFFF},
     {"Grove Street", 0x009900FF},
     {"Ballas", 0xCC66FFFF},
@@ -717,7 +769,7 @@ new const g_Team[][e_TEAM] = {
     {"Da Nang Boys", 0x996633FF}
 };
 
-new const g_Turf[][e_TURF] = {
+new const g_Turf[][eTurf] = {
     { "Error",  0, NO_TEAM, {2708, -2065.5, 2961, -1872.5}},
 
     { "Playa Del Seville",  1, NO_TEAM, {2708.0, -2065.5, 2961.0, -1872.5}},
@@ -769,11 +821,11 @@ new const g_Turf[][e_TURF] = {
     { "Temple", 8, NO_TEAM, {1238.0, -944.5, 1322.0, -917.5}}
 };
 
-new g_MembersInTurf[sizeof(g_Turf)][sizeof(g_Team)];
-new pTeam[MAX_PLAYERS];
-new gTeamCount[MAX_TEAMS];
-new Text3D:TeamsLabel[MAX_TEAMS];
-new PlayerText:CountDownAttack[MAX_PLAYERS];
+new g_MembersInTurf[sizeof(g_Turf)][sizeof(g_Team)],
+    pTeam[MAX_PLAYERS],
+    gTeamCount[MAX_TEAMS],
+    Text3D:TeamsLabel[MAX_TEAMS],
+    PlayerText:CountDownAttack[MAX_PLAYERS];
 
 //Duel System
 new Bet[MAX_PLAYERS],
@@ -786,21 +838,16 @@ new Bet[MAX_PLAYERS],
 
 //Parkour Minigames
 
-#define DIALOG_PARKOURS 12814
-
 new InParkour[MAX_PLAYERS],
     pPickups[3], pCheckpoints[6],
     pVehicles[MAX_PLAYERS];
 
 //Skydive Minigames
 
-#define DIALOG_SKYDIVE 12815
-
 new InSkydive[MAX_PLAYERS], sCheckpoints[3];
 
 //Derby Minigames
 
-#define DIALOG_DERBY 18845
 #define MAX_DERBY_PLAYERS 20
 
 new Float:RanchersDerby[][4] = // 6
@@ -857,7 +904,6 @@ new DerbyCountDownFromAmount = 0,
 
 //TDM Minigames
 
-#define DIALOG_TDM 18846
 #define MAX_TDM_PLAYERS 20
 #define TDMTeamOne 137
 #define TDMTeamTwo 138
@@ -884,10 +930,6 @@ new TeamBalance = 0;
 
 //Inventory
 
-#define 	DIALOG_SHOP 	 17111
-
-#define 	DIALOG_SKIN_TAKE 17836
-#define 	DIALOG_SKIN_BUY  17837
 
 new PervSkin[MAX_PLAYERS],
 	BuySkin[MAX_PLAYERS];
@@ -898,8 +940,6 @@ new PervSkin[MAX_PLAYERS],
 #define     MAX_PROPERTY_NAME	(32) 
 #define     PROPERTY_REVENUE    (60) // Minutes
 #define     PROPERTY_DAYS  		(4)
-
-#define DIALOG_BUY_PROPERTY 15771
 
 enum PropertyData
 {
@@ -917,14 +957,15 @@ enum PropertyData
 	bool:PropertySave,
 	Text3D: PropertyLabel,
 	PropertyMapIcon,
-	AvailablePickup,
-	OwnedPickup
+	PropertyPickup
 }
 
 new pInfo[MAX_PROPERTY][PropertyData],
  	Iterator:Property<MAX_PROPERTY>,
  	AvailablePID[MAX_PLAYERS],
  	pTimer[MAX_PLAYERS];
+
+new PlayerItem[MAX_PLAYERS], CompleteLoop[MAX_PLAYERS];
 
 //House System
 
@@ -946,24 +987,6 @@ enum    _:e_selectmodes
     SELECT_MODE_NONE,
     SELECT_MODE_EDIT,
     SELECT_MODE_SELL
-}
-
-enum    _:e_dialogids
-{
-    DIALOG_BUY_HOUSE = 7500,
-    DIALOG_HOUSE_MENU,
-    DIALOG_HOUSE_LOCK,
-    DIALOG_SAFE_MENU,
-    DIALOG_SAFE_TAKE,
-    DIALOG_SAFE_PUT,
-    DIALOG_GUNS_MENU,
-    DIALOG_GUNS_TAKE,
-    DIALOG_VISITORS_MENU,
-    DIALOG_VISITORS,
-    DIALOG_KEYS_MENU,
-    DIALOG_KEYS,
-    DIALOG_SAFE_HISTORY,
-    DIALOG_MY_KEYS
 }
 
 enum    e_house
@@ -1025,17 +1048,11 @@ new HouseInteriors[][e_interior] =
 new LockNames[3][32] = {"{FF0000}Locked", "{00FF00}Unlocked", "{FF0000}Requires Keys"},
     TransactionNames[2][16] = {"{E74C3C}Taken", "{2ECC71}Added"};
 
-//Friends System
-
-#define MAX_FRIENDS (20)
-#define DIALOG_FRIENDS 15647
-
 //Marijuana System
 
 #define MAX_FARMS 1
 #define MAX_MARIJUANA 500
 #define GROW_TIME (60) // Minutes
-#define DIALOG_SEEDS 1736
 
 enum mInfo
 {
@@ -1062,8 +1079,6 @@ enum fInfo
 new FarmInfo[MAX_FARMS][fInfo], FarmActor;
 
 //UGC System
-
-#define DIALOG_SELL_MONEY	1174
 
 new SelectedUGC[MAX_PLAYERS];
 
@@ -1147,8 +1162,6 @@ new InJob[MAX_PLAYERS], JobCoolDown[MAX_PLAYERS][3],
 
 //Private Vehicle System
 
-#define DIALOG_BUY_VEHICLE      5413
-#define DIALOG_VEHICLES         5513
 #define MAX_SERVER_VEHICLES     2000
 
 enum _:vehLockMods
@@ -1170,6 +1183,8 @@ enum VehiclesData
     vehMod[14],
     vehColorOne,
     vehColorTwo,
+    vehHydraulics,
+    vehNitro,
     Text3D:vehLabel,
     Float:vehX,
     Float:vehY,
@@ -1421,7 +1436,6 @@ new g_StaticPickup[MAX_DROPS][e_STATIC_PICKUP];
 //Ammu Nations
 
 #define AMMU_COOLDOWN       4
-#define DIALOG_AMMU         861
 
 #define COST_FLOWERS        18
 #define COST_STICK          28
@@ -1512,10 +1526,6 @@ new gPlayer_Ammunation[MAX_PLAYERS char], gPlayer_AmmuCoolDown[MAX_PLAYERS];
 
 #define MAX_ATTACHMENTS 5
 
-#define DIALOG_ATTACHMENTS 5123
-#define DIALOG_ATTACHMENTS_EDIT 5124
-#define DIALOG_ATTACHMENTS_SAVE 5125
-
 new objectlist = mS_INVALID_LISTID;
 enum oData 
 { 
@@ -1584,8 +1594,6 @@ IsPlayerInStunt(playerid)
 }
 
 //XP System
-
-#define     DIALOG_TITLES   4185
 
 enum LevelData
 {
@@ -1676,6 +1684,7 @@ public OnGameModeInit()
         `PlayerName` varchar(25) NOT NULL,\
         `Password` varchar(129) NOT NULL,\
         `IP` varchar(17) NOT NULL,\
+        `Email` varchar(35) NOT NULL,\
         `Online` int(5) NOT NULL,\
         `LastSeen` TIMESTAMP NOT NULL,\
         `RegisteredOn` varchar(26) NOT NULL,\
@@ -1696,7 +1705,7 @@ public OnGameModeInit()
         `PremiumExpires` int(11) NOT NULL,\
         `NameChange` int(11) NOT NULL,\
         `FightStyle` int(11) NOT NULL,\
-        `xLevel` int(11) NOT NULL,\
+        `xLevel` int(11) NOT NULL default 1,\
         `XP` int(11) NOT NULL,\
         `Muted` int(11) NOT NULL,\
         `Hitman` int(11) NOT NULL,\
@@ -1708,7 +1717,7 @@ public OnGameModeInit()
         `tSkills` int(11) NOT NULL,\
         `mSkills` int(11) NOT NULL,\
         `dSkills` int(11) NOT NULL,\
-        `PlayerTeam` int(11) NOT NULL,\
+        `PlayerTeam` int(11) NOT NULL default 225,\
         `MoneyBags` int(11) NOT NULL,\
         `Skin` int(11) NOT NULL,\
         `PosX` float NOT NULL,\
@@ -1723,6 +1732,10 @@ public OnGameModeInit()
         `JumpExpire` int(11) NOT NULL,\
         `Friends` int(11) NOT NULL,\
         `Vehicles` int(11) NOT NULL,\
+        `InHouse` int(11) NOT NULL,\
+        `PlayerColor` varchar(16) NOT NULL default '0xFFFFFFFF',\
+        `TextColor` varchar(16) NOT NULL default 'FFFFFF',\
+        `MapHide` int(11) NOT NULL,\
         PRIMARY KEY (`ID`))");
 
     mysql_tquery(mysql, "CREATE TABLE IF NOT EXISTS `Maps` (\
@@ -1820,6 +1833,8 @@ public OnGameModeInit()
       `vehMod_14` int(11) NOT NULL,\
       `vehColorOne` int(11) NOT NULL,\
       `vehColorTwo` int(11) NOT NULL,\
+      `vehHydraulics` int(11) NOT NULL,\
+      `vehNitro` int(11) NOT NULL,\
       `vehX` float NOT NULL,\
       `vehY` float NOT NULL,\
       `vehZ` float NOT NULL,\
@@ -1836,7 +1851,7 @@ public OnGameModeInit()
 
     mysql_tquery(mysql, "CREATE TABLE IF NOT EXISTS `FriendsData` ( `ID` int(5) NOT NULL, `FriendID` int(5) NOT NULL)");
 
-    mysql_tquery(mysql, "CREATE TABLE IF NOT EXISTS `OfflinePMs` ( `PlayerName` varchar(24), `SenderName` varchar(24), `Message` varchar(84), `Status` int(11), `Date` int(11))");
+    mysql_tquery(mysql, "CREATE TABLE IF NOT EXISTS `OfflinePMs` ( `PlayerName` varchar(24) NOT NULL, `SenderName` varchar(24) NOT NULL, `Message` varchar(84) NOT NULL, `Status` int(11) NOT NULL, `Date` TIMESTAMP NOT NULL)");
 
     mysql_tquery(mysql, "CREATE TABLE IF NOT EXISTS `Market` (`Seller` varchar(25) NOT NULL, `Amount` int(11) NOT NULL, `Price` int(11) NOT NULL, PRIMARY KEY (`Seller`), UNIQUE KEY `Seller` (`Seller`))");
 
@@ -1847,8 +1862,7 @@ public OnGameModeInit()
         format(pInfo[i][prName], MAX_PLAYER_NAME, "Property");
         format(pInfo[i][Owner], MAX_PLAYER_NAME, "-");
         pInfo[i][PropertyLabel] = Text3D: INVALID_3DTEXT_ID;
-        pInfo[i][OwnedPickup] = -1;
-        pInfo[i][AvailablePickup] = -1;
+        pInfo[i][PropertyPickup] = -1;
     }
 
     for(new i; i < MAX_HOUSES; ++i)
@@ -1937,6 +1951,10 @@ public OnGameModeInit()
     SetVehicleVirtualWorld(ClassVehicles[0], 99);
     SetVehicleVirtualWorld(ClassVehicles[1], 99);
     SetVehicleVirtualWorld(ClassVehicles[2], 99);
+
+    SetVehicleParamsEx(ClassVehicles[0], VEHICLE_PARAMS_OFF, VEHICLE_PARAMS_OFF, VEHICLE_PARAMS_OFF, VEHICLE_PARAMS_ON, VEHICLE_PARAMS_OFF, VEHICLE_PARAMS_OFF, VEHICLE_PARAMS_OFF);
+    SetVehicleParamsEx(ClassVehicles[1], VEHICLE_PARAMS_OFF, VEHICLE_PARAMS_OFF, VEHICLE_PARAMS_OFF, VEHICLE_PARAMS_ON, VEHICLE_PARAMS_OFF, VEHICLE_PARAMS_OFF, VEHICLE_PARAMS_OFF);
+    SetVehicleParamsEx(ClassVehicles[2], VEHICLE_PARAMS_OFF, VEHICLE_PARAMS_OFF, VEHICLE_PARAMS_OFF, VEHICLE_PARAMS_ON, VEHICLE_PARAMS_OFF, VEHICLE_PARAMS_OFF, VEHICLE_PARAMS_OFF);
 
     // Load Properties
     mysql_tquery(mysql, "SELECT * FROM Property", "LoadProperties", "");
@@ -2705,6 +2723,11 @@ public OnPlayerConnect(playerid)
         SetPlayerCameraPos(playerid, 1871.7205, -1165.4304, 46.8275);
         SetPlayerCameraLookAt(playerid, 1920.8401, -1179.3284, 28.9088);
     }
+
+    for (new i; i < sizeof(AnimationLibraries); i++) {
+
+        ApplyAnimation(playerid, AnimationLibraries[i], "null", 0.0, 0, 0, 0, 0, 0);
+    }
     return 1;
 }
 
@@ -3131,13 +3154,11 @@ public OnPlayerDisconnect(playerid, reason)
                         {
                             KillTimer(g_Turf[i][turfTimer]);
                             KillTimer(g_Turf[i][turfAttackTimer]);
-                            g_Turf[i][turfCountDown] = 0;
 
+                            g_Turf[i][turfCountDown] = 0;
                             g_Turf[i][turfTimer] = -1;
                             g_Turf[i][turfState] = TURF_STATE_NORMAL;
                             g_Turf[i][turfAttacker] = NO_TEAM;
-                            g_Turf[i][turfAttackerKills] = 0;
-                            g_Turf[i][turfOwnerKills] = 0;
 
                             foreach(new x : Player)
                             {
@@ -3147,7 +3168,7 @@ public OnPlayerDisconnect(playerid, reason)
                                     GangZoneShowForPlayer(x, g_Turf[i][turfId], COLOR_CHANGE_ALPHA(g_Team[g_Turf[i][turfOwner]][teamColor]));
                                 }
 
-                                if(IsPlayerInGangZone(playerid, i)) 
+                                if(IsPlayerInGangZone(x, i)) 
                                 {
                                     PlayerTextDrawHide(x, CountDownAttack[playerid]);
                                 }
@@ -3298,6 +3319,11 @@ public OnPlayerDeath(playerid, killerid, reason)
     }
     else CountDeaths[playerid] = 1;
     StartDeathTick[playerid] = gettime();
+
+    if(Info[playerid][MapHide] == 1) {
+
+        foreach(new i : Player) SetPlayerMarkerForPlayer(i, playerid, (GetPlayerColor(playerid) & 0xFFFFFF00));
+    }
 
     if(killerid != INVALID_PLAYER_ID)
     {
@@ -3695,6 +3721,11 @@ public OnPlayerSpawn(playerid)
     {
         pProtectTick[playerid] = 10;
         SetPlayerHealthEx(playerid, FLOAT_INFINITY);
+    }
+
+    if(Info[playerid][MapHide] == 1) {
+
+        foreach(new i : Player) SetPlayerMarkerForPlayer(i, playerid, (GetPlayerColor(playerid) & 0xFFFFFF00));
     }
     return 1;
 }
@@ -4934,7 +4965,7 @@ public OnPlayerPickUpDynamicPickup(playerid, pickupid)
     }
     foreach(new i : Property)
     {
-		if(pickupid == pInfo[i][AvailablePickup])
+		if(pickupid == pInfo[i][PropertyPickup])
 		{
 			AvailablePID[playerid] = i;
 		}
@@ -5159,16 +5190,27 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
             if(!response) return ShowPlayerDialog(playerid, DIALOG_REGISTER, DIALOG_STYLE_INPUT, "Register", "{FFFFFF}Welcome to {9966FF}Explosive Freeroam\n\n{FF0066}Type your password below to register game account", "Register", "Quit");
             else if(response)
             {
-                new query[680],playerip[16];
-
-                GetPlayerIp(playerid, playerip, sizeof(playerip));
+                GetPlayerIp(playerid, Info[playerid][IP], 16);
                 WP_Hash(Info[playerid][Password], 129, inputtext);
 
-                new date[3];
-                getdate(date[2], date[1], date[0]);
+                ShowPlayerDialog(playerid, DIALOG_EMAIL, DIALOG_STYLE_INPUT, "Email", "{FFFFFF}Enter your email below:", "Register", "");
+            }
+        }
+        case DIALOG_EMAIL: 
+        {
+            if(!response) return ShowPlayerDialog(playerid, DIALOG_EMAIL, DIALOG_STYLE_INPUT, "Email", "{FFFFFF}Please enter your email address below:", "Register", "");
+            else if(response) 
+            {
+                if(isnull(inputtext)) return ShowPlayerDialog(playerid, DIALOG_EMAIL, DIALOG_STYLE_INPUT, "Email", "{FFFFFF}Please enter your email address below:", "Register", "");
+                if(!IsValidEmail(inputtext)) return ShowPlayerDialog(playerid, DIALOG_EMAIL, DIALOG_STYLE_INPUT, "Email", "{FF0000}Invalid email address!\n\n{FFFFFF}Please enter your email address below:", "Register", "");
+
+                format(Info[playerid][Email], 35, inputtext);
+
+                new query[680], year, c_month, day;
+                getdate(year, c_month, day);
 
                 new month[15];
-                switch (date[1])
+                switch (c_month)
                 {
                     case 1: month = "January";
                     case 2: month = "Feburary";
@@ -5184,15 +5226,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     case 12: month = "December";
                 }
 
-                new register_on[25];
-                format(register_on, sizeof(register_on), "%02d %s, %d", date[0], month, date[2]);
+                new register_on[25];                //Ex: 13 July, 2017
+                format(register_on, sizeof(register_on), "%02d %s, %d", day, month, year);
 
                 mysql_format(mysql, query, sizeof(query), 
-                "INSERT INTO `playersdata` (PlayerName, Password, IP, RegisteredOn, AutoLogin, Level, Money, UGC, Kills, Deaths, Hours, Minutes, \
+                "INSERT INTO `playersdata` (PlayerName, Password, IP, RegisteredOn, Email, AutoLogin, Level, Money, UGC, Kills, Deaths, Hours, Minutes, \
                 Seconds, Marijuana, Cocaine, Premium, PremiumExpires, NameChange, xLevel, XP, Hitman, PlayerTeam, Jetpack, JetpackExpire) \
-                VALUES ('%e', '%e', '%e', 1, '%e', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 255, 0, 0)",
-                GetName(playerid), Info[playerid][Password], playerip, register_on);
-                
+                VALUES ('%e', '%e', '%e', '%e', '%e', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 255, 0, 0)",
+                GetName(playerid), Info[playerid][Password], Info[playerid][IP], register_on, Info[playerid][Email]);
                 mysql_tquery(mysql, query, "OnAccountRegister", "i", playerid);
             }
         }
@@ -6750,12 +6791,30 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
             if(response)
             {
                 if(Info[playerid][UGC] < VehicleWheels[listitem][WheelPrice]) return SCM(playerid, red, "You don't have enough UGC to purchase this item");
-
                 if(!IsPlayerInAnyVehicle(playerid)) return SCM(playerid, red, "You are not in any vehicle");
                
                 Info[playerid][UGC] -= VehicleWheels[listitem][WheelPrice];
                 
-                AddVehicleComponent(GetPlayerVehicleID(playerid), VehicleWheels[listitem][WheelID]);
+                foreach(new vehicleid : PrivateVehicles[playerid]) {
+
+                    if(IsPlayerInVehicle(playerid, vInfo[vehicleid][vehSessionID])) {
+
+                        if(!strcmp(vInfo[vehicleid][vehOwner], GetName(playerid))) {
+
+                            AddVehicleComponent(vInfo[vehicleid][vehSessionID], VehicleWheels[listitem][WheelID]);
+                            new componentType = GetVehicleComponentType(VehicleWheels[listitem][WheelID]);
+
+                            for(new x; x < 14; x++) {
+
+                                if(componentType == x) {
+
+                                    vInfo[vehicleid][vehMod][x] = VehicleWheels[listitem][WheelID];
+                                }
+                            }
+                        }
+                        else AddVehicleComponent(GetPlayerVehicleID(playerid), VehicleWheels[listitem][WheelID]);
+                    }
+                }
 
                 new Float:x, Float:y, Float:z;
                 GetPlayerPos(playerid, x, y, z);
@@ -6776,12 +6835,18 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
             if(response)
             {
                 if(Info[playerid][UGC] < VehicleSpoiler[listitem][SpoilerPrice]) return SCM(playerid, red, "You don't have enough UGC to purchase this item");
-
                 if(!IsPlayerInAnyVehicle(playerid)) return SCM(playerid, red, "You are not in any vehicle");
                
                 Info[playerid][UGC] -= VehicleSpoiler[listitem][SpoilerPrice];
                 
-                AddVehicleComponent(GetPlayerVehicleID(playerid), VehicleSpoiler[listitem][SpoilerID]);
+                foreach(new vehicleid : PrivateVehicles[playerid]) {
+
+                    if(IsPlayerInVehicle(playerid, vInfo[vehicleid][vehSessionID])) {
+
+                        if(!strcmp(vInfo[vehicleid][vehOwner], GetName(playerid))) AddVehicleComponent(vInfo[vehicleid][vehSessionID], VehicleSpoiler[listitem][SpoilerID]);
+                        else AddVehicleComponent(GetPlayerVehicleID(playerid), VehicleSpoiler[listitem][SpoilerID]);
+                    }
+                }
 
                 new Float:x, Float:y, Float:z;
                 GetPlayerPos(playerid, x, y, z);
@@ -6806,12 +6871,22 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     case 0:
                     {
                         if(Info[playerid][UGC] < 25) return SCM(playerid, red, "You don't have enough UGC to purchase this item");
-
                         if(!IsPlayerInAnyVehicle(playerid)) return SCM(playerid, red, "You are not in any vehicle");
                        
                         Info[playerid][UGC] -= 25;
                         
-                        AddVehicleComponent(GetPlayerVehicleID(playerid), 1009);
+                        foreach(new vehicleid : PrivateVehicles[playerid]) {
+
+                            if(IsPlayerInVehicle(playerid, vInfo[vehicleid][vehSessionID])) {
+
+                                if(!strcmp(vInfo[vehicleid][vehOwner], GetName(playerid))) {
+
+                                    AddVehicleComponent(vInfo[vehicleid][vehSessionID], 1009);
+                                    vInfo[vehicleid][vehNitro] = 1;
+                                }
+                                else AddVehicleComponent(GetPlayerVehicleID(playerid), 1009);
+                            }
+                        }
 
                         new Float:x, Float:y, Float:z;
                         GetPlayerPos(playerid, x, y, z);
@@ -6824,12 +6899,22 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     case 1:
                     {
                         if(Info[playerid][UGC] < 50) return SCM(playerid, red, "You don't have enough UGC to purchase this item");
-
                         if(!IsPlayerInAnyVehicle(playerid)) return SCM(playerid, red, "You are not in any vehicle");
                        
                         Info[playerid][UGC] -= 50;
                         
-                        AddVehicleComponent(GetPlayerVehicleID(playerid), 1008);
+                        foreach(new vehicleid : PrivateVehicles[playerid]) {
+
+                            if(IsPlayerInVehicle(playerid, vInfo[vehicleid][vehSessionID])) {
+
+                                if(!strcmp(vInfo[vehicleid][vehOwner], GetName(playerid))) {
+
+                                    AddVehicleComponent(vInfo[vehicleid][vehSessionID], 1008);
+                                    vInfo[vehicleid][vehNitro] = 2;
+                                }
+                                else AddVehicleComponent(GetPlayerVehicleID(playerid), 1008);
+                            }
+                        }
 
                         new Float:x, Float:y, Float:z;
                         GetPlayerPos(playerid, x, y, z);
@@ -6842,12 +6927,22 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     case 2:
                     {
                         if(Info[playerid][UGC] < 75) return SCM(playerid, red, "You don't have enough UGC to purchase this item");
-
                         if(!IsPlayerInAnyVehicle(playerid)) return SCM(playerid, red, "You are not in any vehicle");
                        
                         Info[playerid][UGC] -= 75;
                         
-                        AddVehicleComponent(GetPlayerVehicleID(playerid), 1010);
+                        foreach(new vehicleid : PrivateVehicles[playerid]) {
+
+                            if(IsPlayerInVehicle(playerid, vInfo[vehicleid][vehSessionID])) {
+
+                                if(!strcmp(vInfo[vehicleid][vehOwner], GetName(playerid))) {
+
+                                    AddVehicleComponent(vInfo[vehicleid][vehSessionID], 1010);
+                                    vInfo[vehicleid][vehNitro] = 3;
+                                }
+                                else AddVehicleComponent(GetPlayerVehicleID(playerid), 1010);
+                            }
+                        }
 
                         new Float:x, Float:y, Float:z;
                         GetPlayerPos(playerid, x, y, z);
@@ -6869,12 +6964,22 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     case 0:
                     {
                         if(Info[playerid][UGC] < 25) return SCM(playerid, red, "You don't have enough UGC to purchase this item");
-
                         if(!IsPlayerInAnyVehicle(playerid)) return SCM(playerid, red, "You are not in any vehicle");
 
                         Info[playerid][UGC] -= 25;
                         
-                        AddVehicleComponent(GetPlayerVehicleID(playerid), 1087);
+                        foreach(new vehicleid : PrivateVehicles[playerid]) {
+
+                            if(IsPlayerInVehicle(playerid, vInfo[vehicleid][vehSessionID])) {
+
+                                if(!strcmp(vInfo[vehicleid][vehOwner], GetName(playerid))) {
+                                 
+                                    AddVehicleComponent(vInfo[vehicleid][vehSessionID], 1087);
+                                    vInfo[vehicleid][vehHydraulics] = 1;
+                                }
+                                else AddVehicleComponent(GetPlayerVehicleID(playerid), 1087);
+                            }
+                        }
 
                         new Float:x, Float:y, Float:z;
                         GetPlayerPos(playerid, x, y, z);
@@ -7022,36 +7127,21 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 		}
 		case DIALOG_COLORS:
-		{
-			if(response)
-			{
-				switch(listitem)
-				{
-					case 0: ShowPlayerDialog(playerid, DIALOG_COLORS+1, DIALOG_STYLE_LIST, "Name Colors", "{FFFFFF}White\n\
-																										   {FF8C66}Red\n\
-																										   {FFCC66}Orange\n\
-																										   {33FF99}Green\n\
-																										   {00B300}Green\n\
-																										   {99CCFF}Blue\n\
-																										   {9999FF}Purple\n\
-																										   {CC99FF}Purple\n\
-																										   {FFB3FF}Pink\n\
-																										   {FF66B3}Pink\n\
-																										   {FF0066}Pink\n", "Select", "Close");
-
-					case 1: ShowPlayerDialog(playerid, DIALOG_COLORS+2, DIALOG_STYLE_LIST, "Text Colors", "{FFFFFF}White\n\
-																										   {FF9F80}Red\n\
-																										   {FFD480}Orange\n\
-																										   {00FF80}Green\n\
-																										   {80FF80}Green\n\
-																										   {66FFFF}Blue\n\
-																										   {B3DAFF}Blue\n\
-																										   {B3B3FF}Purple\n\
-																										   {DAB3FF}Purple\n\
-																										   {FFCCFF}Pink\n", "Select", "Close");
-				}
-			}
-		}
+        {
+            if(response)
+            {
+                switch(listitem)
+                {
+                    case 0: SetPlayerColor(playerid, 0xFFFFFFFF), format(Info[playerid][playerColor], 16, "0xFFFFFFFF"), format(Info[playerid][textColor], 16, "FFFFFF");
+                    case 1: SetPlayerColor(playerid, 0xFF6666FF), format(Info[playerid][playerColor], 16, "0xFF6666FF"), format(Info[playerid][textColor], 16, "FF6666");
+                    case 2: SetPlayerColor(playerid, 0xFFFF33FF), format(Info[playerid][playerColor], 16, "0xFFFF33FF"), format(Info[playerid][textColor], 16, "FFFF33");
+                    case 3: SetPlayerColor(playerid, 0x99FF66FF), format(Info[playerid][playerColor], 16, "0x99FF66FF"), format(Info[playerid][textColor], 16, "99FF66");
+                    case 4: SetPlayerColor(playerid, 0x3366FFFF), format(Info[playerid][playerColor], 16, "0x3366FFFF"), format(Info[playerid][textColor], 16, "3366FF");
+                    case 5: SetPlayerColor(playerid, 0x9966FFFF), format(Info[playerid][playerColor], 16, "0x9966FFFF"), format(Info[playerid][textColor], 16, "9966FF");
+                    case 6: SetPlayerColor(playerid, 0xFF0099FF), format(Info[playerid][playerColor], 16, "0xFF0099FF"), format(Info[playerid][textColor], 16, "FF0099");
+                }
+            }
+        }
 		case DIALOG_BUY_PROPERTY:
 		{
 			if(response)
@@ -7945,6 +8035,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 vInfo[index][vehColorOne] = vInfo[i][vehColorOne];
                 vInfo[index][vehColorTwo] = vInfo[i][vehColorTwo];
 
+                for(new x; x < 14; x++) 
+                    vInfo[index][vehMod][x] = 0;
+
                 new query[360];
                 mysql_format(mysql, query, sizeof(query),
                 "INSERT INTO `Vehicles` (vehModel, vehPrice, vehName, vehOwner, vehPlate, vehColorOne, vehColorTwo, vehX, vehY, vehZ, vehA) VALUES (%d, %d, '%e', '-', '%e', %d, %d, %f, %f, %f, %f)",
@@ -7952,7 +8045,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 vInfo[index][vehY], vInfo[index][vehZ], vInfo[index][vehA]);
                 mysql_tquery(mysql, query, "OnDealerVehicleCreated", "i", index);
 
-                SetVehicleToRespawn(vInfo[i][vehSessionID]);
                 DestroyDynamic3DTextLabel(vInfo[i][vehLabel]);
 
                 GivePlayerCash(playerid, -vInfo[i][vehPrice]);
@@ -7969,7 +8061,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
                 format(query, sizeof(query), "has bought %s for $%s", vInfo[i][vehName], cNumber(vInfo[i][vehPrice]));
                 SaveLog(playerid, query);
-                return 1;
             }
         }
         case DIALOG_VEHICLES:
@@ -8302,6 +8393,114 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     case 10: ShowModelSelectionMenu(playerid, Sports, "Sport Cars");
                     case 11: ShowModelSelectionMenu(playerid, StationWagon, "StationWagon");
                     case 12: ShowModelSelectionMenu(playerid, Unique, "Unique Vehicles");
+                }
+            }
+        }
+        case DIALOG_PROPERTIES: {
+
+            if(listitem == PlayerItem[playerid])
+            {
+                if(strfind(inputtext, "Back", true, 0) != -1)
+                {
+                    cmd_properties(playerid, "");
+                }
+                else
+                {
+                    new string[128], cstring[128 * 10], cnt = 0;
+                    for(new i; i < 1000; i++)
+                    {
+                        if(i == 0)
+                        {
+                            i = CompleteLoop[playerid];
+                        }
+                        if(cnt > 9)
+                        {
+                            strcat(cstring, "Next\n");
+                            break;
+                        }
+                        else
+                        {
+                            if(pOwns(playerid, i))
+                            {
+                                new diff_secs = ( pInfo[i][PropertyExpire] - gettime() );
+                                new remain_months = ( diff_secs / (60 * 60 * 24 * 30) );
+                                diff_secs -= remain_months * 60 * 60 * 24 * 30;
+                                new remain_days = ( diff_secs / (60 * 60 * 24) );
+                                diff_secs -= remain_days * 60 * 60 * 24;
+                                new remain_hours = ( diff_secs / (60 * 60) );
+                                diff_secs -= remain_hours * 60 * 60;
+                                new remain_minutes = ( diff_secs / 60 );
+
+                                format(string, sizeof(string), "{FFFFFF}Property: {00FF00}%s {FFFFFF}Location: {00FF00}%s (%d months %d days %d hours %d minutes)\n", pInfo[i][prName], GetZoneName(pInfo[i][PropertyX], pInfo[i][PropertyY], pInfo[i][PropertyZ]),
+                                remain_months, remain_days, remain_hours, remain_minutes);
+                                strcat(cstring, string);
+
+                                cnt++;
+                                CompleteLoop[playerid] += 1;
+                                PlayerItem[playerid] = cnt;
+                            }
+                        }
+                    }
+                    if(cnt <= 9)
+                    {
+                        strcat(cstring, "Back\n");
+                    }
+                    if(cnt == 0) ShowPlayerDialog(playerid, WARN, DIALOG_STYLE_MSGBOX, "Properties", "{FF0000}No properties found", "Close", "");
+                    else ShowPlayerDialog(playerid, DIALOG_PROPERTIES, DIALOG_STYLE_LIST, "Properties", cstring, "Close", "");
+                }
+            }
+        }
+        case DIALOG_HOUSES: {
+
+            if(listitem == PlayerItem[playerid])
+            {
+                if(strfind(inputtext, "Back", true, 0) != -1)
+                {
+                    cmd_houses(playerid, "");
+                }
+                else
+                {
+                    new string[128], cstring[128 * 10], cnt = 0;
+                    for(new i; i < 1000; i++)
+                    {
+                        if(i == 0)
+                        {
+                            i = CompleteLoop[playerid];
+                        }
+                        if(cnt > 9)
+                        {
+                            strcat(cstring, "Next\n");
+                            break;
+                        }
+                        else
+                        {
+                            if(!strcmp(HouseData[i][Owner], GetName(playerid)))
+                            {
+                                new diff_secs = ( HouseData[i][HouseExpire] - gettime() );
+                                new remain_months = ( diff_secs / (60 * 60 * 24 * 30) );
+                                diff_secs -= remain_months * 60 * 60 * 24 * 30;
+                                new remain_days = ( diff_secs / (60 * 60 * 24) );
+                                diff_secs -= remain_days * 60 * 60 * 24;
+                                new remain_hours = ( diff_secs / (60 * 60) );
+                                diff_secs -= remain_hours * 60 * 60;
+                                new remain_minutes = ( diff_secs / 60 );
+
+                                format(string, sizeof(string), "{FFFFFF}House: {00FF00}%d {FFFFFF}Location: {00FF00}%s {FFFFFF}(%d months %d days %d hours %d minutes)\n", i, GetZoneName(HouseData[i][houseX], HouseData[i][houseY],
+                                HouseData[i][houseZ]), remain_months, remain_days, remain_hours, remain_minutes);
+                                strcat(cstring, string);
+
+                                cnt++;
+                                CompleteLoop[playerid] += 1;
+                                PlayerItem[playerid] = cnt;
+                            }
+                        }
+                    }
+                    if(cnt <= 9)
+                    {
+                        strcat(cstring, "Back\n");
+                    }
+                    if(cnt == 0) ShowPlayerDialog(playerid, WARN, DIALOG_STYLE_MSGBOX, "Houses", "{FF0000}No houses found", "Close", "");
+                    else ShowPlayerDialog(playerid, DIALOG_HOUSES, DIALOG_STYLE_LIST, "Houses", cstring, "Close", "");
                 }
             }
         }
@@ -8990,15 +9189,17 @@ CMD:removetitle(playerid, params[])
     return 1;
 }
 
-// CMD:color(playerid, params[])
-// {
-//     if(Info[playerid][Premium] >= 1)
-//     {
-//      ShowPlayerDialog(playerid, DIALOG_COLORS, DIALOG_STYLE_LIST, "Name & Text Colors", "Name Color\nText Color", "Select", "Close");
-//         return 1;
-//     }
-//     else return cmd_benefits(playerid, params);
-// }
+CMD:color(playerid, params[])
+{
+    if(Info[playerid][Premium] >= 1)
+    {
+        if(pTeam[playerid] != NO_TEAM) return SendClientMessage(playerid, red, "You can't use this command while you are in the gang");
+
+        ShowPlayerDialog(playerid, DIALOG_COLORS, DIALOG_STYLE_LIST, "Name Color", "{FFFFFF}White\n{FF6666}Red\n{FFFF33}Yellow\n{99FF66}Green\n{3366FF}Blue\n{9966FF}Purple\n{FF0099}Pink", "Select", "Close");
+        return 1;
+    }
+    else return cmd_benefits(playerid, params);
+}
 
 CMD:tag(playerid, params[])
 {
@@ -10443,6 +10644,9 @@ CMD:gangkick(playerid, params[])
     pTeam[id] = NO_TEAM;
     SetPlayerColor(id, COLOR_NULL);
 
+    format(Info[playerid][playerColor], 16, "0xFFFFFFFF");
+    format(Info[playerid][textColor], 16, "FFFFFF");
+
     for(new i, j = sizeof(g_Turf); i < j; i++) 
     {
         GangZoneHideForPlayer(playerid, g_Turf[i][turfId]);
@@ -10473,27 +10677,29 @@ CMD:gangbackup(playerid, params[])
     return 1;
 }
 
-CMD:attack(playerid, params[])
+CMD:attack(playerid, params[]) 
 {
     if(pTeam[playerid] == NO_TEAM) return SCM(playerid, red, "You are not in gang");
     if(!IsPlayerInAnyGangZone(playerid)) return SCM(playerid, red, "You are not in gang zone");
 
-    if(GetPlayerState(playerid) != PLAYER_STATE_WASTED && GetPlayerInterior(playerid) == 0 && GetPlayerVirtualWorld(playerid) == 0) 
-    {
-        for (new i, j = sizeof(g_Turf); i < j; i++) 
-        {
-            foreach(new x : Player)
-            {
-                if(IsPlayerInGangZone(x, i))
-                {
-                    if (pTeam[x] == g_Turf[i][turfOwner]) return SCM(playerid, red, "You cannot attack your gang hood");
+    if(GetPlayerState(playerid) != PLAYER_STATE_WASTED && GetPlayerInterior(playerid) == 0 && GetPlayerVirtualWorld(playerid) == 0) {
 
-                    if (pTeam[x] == pTeam[playerid]) 
-                    {
-                        if (g_Turf[i][turfState] == TURF_STATE_ATTACKED) return SCM(playerid, red, "There is already gang war in this hood");
+        for(new i, j = sizeof(g_Turf); i < j; i++) {
 
-                        if (g_MembersInTurf[i][pTeam[x]] >= TURF_REQUIRED_PLAYERS) 
-                        {
+            if(IsPlayerInGangZone(playerid, i)) {
+
+                if(pTeam[playerid] == g_Turf[i][turfOwner]) return SCM(playerid, red, "You cannot attack your gang hood");
+                if (g_Turf[i][turfState] == TURF_STATE_ATTACKED) return SCM(playerid, red, "There is already gang war in this hood");
+            }
+
+            foreach(new x : Player) {
+
+                if(IsPlayerInGangZone(x, i)) {
+
+                    if(pTeam[x] == pTeam[playerid]) {
+
+                        if (g_MembersInTurf[i][pTeam[x]] >= TURF_REQUIRED_PLAYERS) {
+
                             g_Turf[i][turfState] = TURF_STATE_ATTACKED;
                             g_Turf[i][turfAttacker] = pTeam[playerid];
                             g_Turf[i][turfTimer] = SetTimerEx("OnTurfwarEnd", TURF_REQUIRED_CAPTURETIME, false, "i", i);
@@ -10523,8 +10729,11 @@ CMD:leavegang(playerid, params[])
     }
 
     pTeam[playerid] = NO_TEAM;
-    
     SetPlayerColor(playerid, COLOR_NULL);
+
+    format(Info[playerid][textColor], 16, "FFFFFF");
+    format(Info[playerid][playerColor], 16, "0xFFFFFFFF");
+
     for(new i, j = sizeof(g_Turf); i < j; i++) 
     {
         GangZoneHideForPlayer(playerid, g_Turf[i][turfId]);
@@ -11110,7 +11319,7 @@ CMD:buyproperty(playerid, params[])
 CMD:propertyinfo(playerid, params[])
 {
 	new pID = AvailablePID[playerid],
-	 	string[180];
+	 	string[360];
 
 	if(!IsPlayerInRangeOfPoint(playerid, 2.0, pInfo[pID][PropertyX], pInfo[pID][PropertyY], pInfo[pID][PropertyZ])) return SCM(playerid, red, "You are not near the property");
 
@@ -11136,36 +11345,47 @@ CMD:propertyinfo(playerid, params[])
 
 CMD:properties(playerid, params[])
 {
-	new string[128], cstring[300], cnt = 0;
-	foreach(new i : Property)
-	{
-		if(pOwns(playerid, i))
-		{
-            new diff_secs = ( pInfo[i][PropertyExpire] - gettime() );
-            new remain_months = ( diff_secs / (60 * 60 * 24 * 30) );
-            diff_secs -= remain_months * 60 * 60 * 24 * 30;
-            new remain_days = ( diff_secs / (60 * 60 * 24) );
-            diff_secs -= remain_days * 60 * 60 * 24;
-            new remain_hours = ( diff_secs / (60 * 60) );
-            diff_secs -= remain_hours * 60 * 60;
-            new remain_minutes = ( diff_secs / 60 );
+    new string[128], cstring[128 * 10], cnt = 0;
+    foreach(new i : Property)
+    {
+        if(cnt > 9)
+        {
+            strcat(cstring, "Next\n");
+            break;
+        }
+        else
+        {
+            if(pOwns(playerid, i))
+            {
+                new diff_secs = ( pInfo[i][PropertyExpire] - gettime() );
+                new remain_months = ( diff_secs / (60 * 60 * 24 * 30) );
+                diff_secs -= remain_months * 60 * 60 * 24 * 30;
+                new remain_days = ( diff_secs / (60 * 60 * 24) );
+                diff_secs -= remain_days * 60 * 60 * 24;
+                new remain_hours = ( diff_secs / (60 * 60) );
+                diff_secs -= remain_hours * 60 * 60;
+                new remain_minutes = ( diff_secs / 60 );
 
-			format(string, sizeof(string), "{FFFFFF}Property: {00FF00}%s {FFFFFF}Location: {00FF00}%s (%d months %d days %d hours %d minutes)\n", pInfo[i][prName], GetZoneName(pInfo[i][PropertyX], pInfo[i][PropertyY], pInfo[i][PropertyZ]),
-            remain_months, remain_days, remain_hours, remain_minutes);
-			strcat(cstring, string);
-			cnt++;
-		}
-	}
-	if(cnt == 0) ShowPlayerDialog(playerid, WARN, DIALOG_STYLE_MSGBOX, "Properties", "{FF0000}No properties found", "Close", "");
-	else ShowPlayerDialog(playerid, WARN, DIALOG_STYLE_LIST, "Properties", string, "Close", "");
-	return 1;
+                format(string, sizeof(string), "{FFFFFF}Property: {00FF00}%s {FFFFFF}Location: {00FF00}%s (%d months %d days %d hours %d minutes)\n", pInfo[i][prName], GetZoneName(pInfo[i][PropertyX], pInfo[i][PropertyY], pInfo[i][PropertyZ]),
+                remain_months, remain_days, remain_hours, remain_minutes);
+                strcat(cstring, string);
+
+                cnt++;
+                CompleteLoop[playerid] = cnt;
+                PlayerItem[playerid] = cnt;
+            }
+        }
+    }
+    if(cnt == 0) ShowPlayerDialog(playerid, WARN, DIALOG_STYLE_MSGBOX, "Properties", "{FF0000}No properties found", "Close", "");
+    else ShowPlayerDialog(playerid, DIALOG_PROPERTIES, DIALOG_STYLE_LIST, "Properties", cstring, "Close", "");
+    return 1;
 }
 
 CMD:friend(playerid, params[])
 {
     new id, string[128], query[128];
     if(sscanf(params, "u", id)) return SCM(playerid, red, "Add friend: /friend <PlayerID>");
-    if(Info[playerid][Friends] >= MAX_FRIENDS) return SCM(playerid, red, "You can't add more players");
+    if(Info[playerid][Friends] >= 20) return SCM(playerid, red, "You can't add more players");
     if(!IsPlayerConnected(id)) return SCM(playerid, red, "Player is not connected");
     if(id == playerid) return SCM(playerid, red, "You can't add yourself");
 
@@ -11303,7 +11523,7 @@ CMD:opm(playerid, params[])
 	if(!AccountExists(name)) return SCM(playerid, red, "Account does not exists");
 
 	new query[180];
-	mysql_format(mysql, query, sizeof(query), "INSERT INTO `OfflinePMs` (`PlayerName`, `SenderName`, `Message`, `Status`, `Date`) VALUES ('%e', '%e', '%e', 0, UNIX_TIMESTAMP())", name, GetName(playerid), txt);
+	mysql_format(mysql, query, sizeof(query), "INSERT INTO `OfflinePMs` (`PlayerName`, `SenderName`, `Message`, `Status`) VALUES ('%e', '%e', '%e', 0)", name, GetName(playerid), txt);
 	mysql_tquery(mysql, query);
 
 	format(query, sizeof(query), "You have sent an offline message to %s", name);
@@ -11484,28 +11704,39 @@ CMD:enterexit(playerid, params[])
 
 CMD:houses(playerid, params[])
 {
-    new string[128], cstring[500], cnt = 0;
+    new string[128], cstring[128 * 10], cnt = 0;
     foreach(new i : Houses)
     {
-        if(!strcmp(HouseData[i][Owner], GetName(playerid)))
+        if(cnt > 9)
         {
-            new diff_secs = ( HouseData[i][HouseExpire] - gettime() );
-            new remain_months = ( diff_secs / (60 * 60 * 24 * 30) );
-            diff_secs -= remain_months * 60 * 60 * 24 * 30;
-            new remain_days = ( diff_secs / (60 * 60 * 24) );
-            diff_secs -= remain_days * 60 * 60 * 24;
-            new remain_hours = ( diff_secs / (60 * 60) );
-            diff_secs -= remain_hours * 60 * 60;
-            new remain_minutes = ( diff_secs / 60 );
+            strcat(cstring, "Next\n");
+            break;
+        }
+        else
+        {
+            if(!strcmp(HouseData[i][Owner], GetName(playerid)))
+            {
+                new diff_secs = ( HouseData[i][HouseExpire] - gettime() );
+                new remain_months = ( diff_secs / (60 * 60 * 24 * 30) );
+                diff_secs -= remain_months * 60 * 60 * 24 * 30;
+                new remain_days = ( diff_secs / (60 * 60 * 24) );
+                diff_secs -= remain_days * 60 * 60 * 24;
+                new remain_hours = ( diff_secs / (60 * 60) );
+                diff_secs -= remain_hours * 60 * 60;
+                new remain_minutes = ( diff_secs / 60 );
 
-            format(string, sizeof(string), "{FFFFFF}House: {00FF00}%d {FFFFFF}Location: {00FF00}%s {FFFFFF}(%d months %d days %d hours %d minutes)\n", i, GetZoneName(HouseData[i][houseX], HouseData[i][houseY],
-            HouseData[i][houseZ]), remain_months, remain_days, remain_hours, remain_minutes);
-            strcat(cstring, string);
-            cnt++;
+                format(string, sizeof(string), "{FFFFFF}House: {00FF00}%d {FFFFFF}Location: {00FF00}%s {FFFFFF}(%d months %d days %d hours %d minutes)\n", i, GetZoneName(HouseData[i][houseX], HouseData[i][houseY],
+                HouseData[i][houseZ]), remain_months, remain_days, remain_hours, remain_minutes);
+                strcat(cstring, string);
+                
+                cnt++;
+                CompleteLoop[playerid] = cnt;
+                PlayerItem[playerid] = cnt;
+            }
         }
     }
     if(cnt == 0) ShowPlayerDialog(playerid, WARN, DIALOG_STYLE_MSGBOX, "Houses", "{FF0000}No houses found", "Close", "");
-    else ShowPlayerDialog(playerid, WARN, DIALOG_STYLE_LIST, "Houses", string, "Close", "");
+    else ShowPlayerDialog(playerid, DIALOG_HOUSES, DIALOG_STYLE_LIST, "Houses", cstring, "Close", "");
     return 1;
 }
 
@@ -11793,6 +12024,7 @@ CMD:unlock(playerid, params[])
     }
     else return SCM(playerid, red, "Vehicles is already unlocked");
 }
+
 /*============================================================================*/
 /*--------------------------Administration Commands---------------------------*/
 /*============================================================================*/
@@ -14474,7 +14706,7 @@ CMD:createvehicle(playerid, params[])
     if(Info[playerid][Level] >= 5)
     {
         new modelid[30], vehid, color1, color2, price;
-        if(sscanf(params, "s[30]iid", modelid, color1, color2, price)) return SCM(playerid, red, "Create vehicle: /createvehicle <ModelID> <Color1> <Color2> <Price>");
+        if(sscanf(params, "s[30]iii", modelid, color1, color2, price)) return SCM(playerid, red, "Create vehicle: /createvehicle <ModelID> <Color1> <Color2> <Price>");
 
         if(IsNumeric(modelid)) vehid = strval(modelid);
         else vehid = ReturnVehicleModelID(modelid);
@@ -14492,7 +14724,7 @@ CMD:createvehicle(playerid, params[])
         SetPlayerPos(playerid, vInfo[index][vehX] + 3, vInfo[index][vehY], vInfo[index][vehZ]);
 
         vInfo[index][vehSessionID] = CreateVehicle(vehid, vInfo[index][vehX], vInfo[index][vehY], vInfo[index][vehZ], vInfo[index][vehA], color1, color2, 10);
-        SetVehicleParamsEx(vInfo[index][vehSessionID], 0, 0, 0, 1, 0, 0, 0);
+        SetVehicleParamsEx(vInfo[index][vehSessionID], 1, 0, 0, 1, 0, 0, 0);
         SetVehicleNumberPlate(vInfo[index][vehSessionID], "UG");
 
         format(vInfo[index][vehName], MAX_PLAYER_NAME, GetVehicleName(vehid));
@@ -14781,7 +15013,7 @@ CMD:createproperty(playerid, params[])
         new string[128];
         format(string, sizeof(string), "Property: %s\nPrice: $%s", name, cNumber(price));
 
-		pInfo[id][AvailablePickup] = CreateDynamicPickup(1273, 1, pInfo[id][PropertyX], pInfo[id][PropertyY], pInfo[id][PropertyZ]);
+		pInfo[id][PropertyPickup] = CreateDynamicPickup(1273, 1, pInfo[id][PropertyX], pInfo[id][PropertyY], pInfo[id][PropertyZ]);
 		pInfo[id][PropertyLabel] = CreateDynamic3DTextLabel(string, 0xFFFF00FF, pInfo[id][PropertyX], pInfo[id][PropertyY], pInfo[id][PropertyZ]+0.35, 15.0, .testlos = 1);
         pInfo[id][PropertyMapIcon] = CreateDynamicMapIcon(pInfo[id][PropertyX], pInfo[id][PropertyY], pInfo[id][PropertyZ], 31, 0, 0, 0);
 
@@ -14882,16 +15114,14 @@ CMD:deleteproperty(playerid, params[])
 		if(!Iter_Contains(Property, id)) return SCM(playerid, red, "Invalid property ID");
 
 		DestroyDynamic3DTextLabel(pInfo[id][PropertyLabel]);
-		DestroyDynamicPickup(pInfo[id][OwnedPickup]);
-		DestroyDynamicPickup(pInfo[id][AvailablePickup]);
+		DestroyDynamicPickup(pInfo[id][PropertyPickup]);
 		DestroyDynamicMapIcon(pInfo[id][PropertyMapIcon]);
 
 	    format(pInfo[id][prName], MAX_PROPERTY_NAME, "Property");
 		format(pInfo[id][Owner], MAX_PLAYER_NAME, "-");
 
 		pInfo[id][PropertyLabel] = Text3D:INVALID_3DTEXT_ID;
-		pInfo[id][AvailablePickup] = -1;
-		pInfo[id][OwnedPickup] = -1;
+		pInfo[id][PropertyPickup] = -1;
 		pInfo[id][PropertyExpire] = 0;
 		pInfo[id][PropertySave] = false;
 		Iter_Remove(Property, id);
@@ -16263,6 +16493,7 @@ stock SavePlayerData(playerid, registered, logged, closemysql = 0)
         GetPlayerPos(playerid, px, py, pz);
         GetPlayerHealth(playerid, xHP);
         GetPlayerArmour(playerid, xArmour);
+        GetPlayerIp(playerid, Info[playerid][IP], 16);
 
         Info[playerid][PlayerTeam] = pTeam[playerid];
         Info[playerid][Money] = GetPlayerCash(playerid);
@@ -16281,6 +16512,7 @@ stock SavePlayerData(playerid, registered, logged, closemysql = 0)
             Info[playerid][pArmour] = LastArmour[playerid];
             Info[playerid][Interior] = LastInterior[playerid];
         }
+
         if(Info[playerid][InDM] == 0 && InEvent[playerid] == 0 && InDerby[playerid] == 0 && InTDM[playerid] == 0 && InParkour[playerid] == 0 && InSkydive[playerid] == 0 && InDuel[playerid] == 0)
         {
             Info[playerid][PosX] = px;
@@ -16301,17 +16533,17 @@ stock SavePlayerData(playerid, registered, logged, closemysql = 0)
             }
         }
 
-        mysql_format(mysql, query, sizeof(query), "UPDATE `playersdata` SET `LastSeen` = UNIX_TIMESTAMP(), `AutoLogin` = %i, `Level` = %i, `Money` = %i, `UGC` = %i, `Kills` = %i, `Deaths` = %i,\
-        `Suicides` = %i, `Hours` = %i, `Minutes` = %i, `Seconds` = %i, `Marijuana` = %i, `Seeds` = %i, `Cocaine` = %i, `Premium` = %i, `PremiumExpires` = %i, `NameChange` = %i, `FightStyle` = %i,\
+        mysql_format(mysql, query, sizeof(query), "UPDATE `playersdata` SET `LastSeen` = UNIX_TIMESTAMP(), `IP` = '%e', `AutoLogin` = %i, `Level` = %i, `Money` = %i, `UGC` = %i, `Kills` = %i,\
+        `Deaths` = %i, `Suicides` = %i, `Hours` = %i, `Minutes` = %i, `Seconds` = %i, `Marijuana` = %i, `Seeds` = %i, `Cocaine` = %i, `Premium` = %i, `PremiumExpires` = %i, `FightStyle` = %i,\
         `xLevel` = %i, `XP` = %i, `Muted` = %i, `Hitman` = %i, `gSkills` = %i, `bSkills` = %i, `vSkills` = %i, `aSkills` = %i, `rSkills` = %i, `tSkills` = %i, `mSkills` = %i, `dSkills` = %i,\
-        `PlayerTeam` = %i, `MoneyBags` = %i, `Skin` = %i, `PosX` = %f, `PosY` = %f, `PosZ` = %f, `Interior` = %i, `Health` = %f, `Armour` = %f, `Jetpack` = %i, `JetpackExpire` = %i, `Jump` = %i,\
-        `JumpExpire` = %i, `Friends` = %i, `Vehicles` = %i  WHERE `ID` = %d",
-        Info[playerid][AutoLogin], Info[playerid][Level], Info[playerid][Money], Info[playerid][UGC], Info[playerid][Kills], Info[playerid][Deaths], Info[playerid][Suicides], Info[playerid][Hours], Info[playerid][Minutes],
-        Info[playerid][Seconds], Info[playerid][Marijuana], Info[playerid][Seeds], Info[playerid][Cocaine], Info[playerid][Premium], Info[playerid][PremiumExpires], Info[playerid][NameChange], Info[playerid][FightStyle], 
+        `PlayerTeam` = %i, `MoneyBags` = %i, `Skin` = %i, `PosX` = %f, `PosY` = %f, `PosZ` = %f, `Interior` = %i, `Health` = %f, `Armour` = %f, `Jetpack` = %i, `JetpackExpire` = %i,\
+        `Friends` = %i, `Vehicles` = %i, `InHouse` = %i, `PlayerColor` = '%e', `TextColor` = '%e', `MapHide` = %i  WHERE `ID` = %d",
+        Info[playerid][IP], Info[playerid][AutoLogin], Info[playerid][Level], Info[playerid][Money], Info[playerid][UGC], Info[playerid][Kills], Info[playerid][Deaths], Info[playerid][Suicides], Info[playerid][Hours], 
+        Info[playerid][Minutes], Info[playerid][Seconds], Info[playerid][Marijuana], Info[playerid][Seeds], Info[playerid][Cocaine], Info[playerid][Premium], Info[playerid][PremiumExpires], Info[playerid][FightStyle], 
         Info[playerid][xLevel], Info[playerid][XP], MuteCounter[playerid], Info[playerid][Hitman], Info[playerid][Skills][GROVE], Info[playerid][Skills][BALLAS], Info[playerid][Skills][VAGOS], Info[playerid][Skills][AZTECAS], 
         Info[playerid][Skills][BIKERS], Info[playerid][Skills][TRIADS], Info[playerid][Skills][MAFIA], Info[playerid][Skills][NANG], Info[playerid][PlayerTeam], Info[playerid][MoneyBags], Info[playerid][Skin], Info[playerid][PosX],
-        Info[playerid][PosY], Info[playerid][PosZ], Info[playerid][Interior], Info[playerid][pHealth], Info[playerid][pArmour], Info[playerid][Jetpack], Info[playerid][JetpackExpire], Info[playerid][Jump], Info[playerid][JumpExpire], 
-        Info[playerid][Friends], Info[playerid][vehLimit], Info[playerid][ID]);
+        Info[playerid][PosY], Info[playerid][PosZ], Info[playerid][Interior], Info[playerid][pHealth], Info[playerid][pArmour], Info[playerid][Jetpack], Info[playerid][JetpackExpire], Info[playerid][Friends], Info[playerid][vehLimit], 
+        InHouse[playerid], Info[playerid][playerColor], Info[playerid][textColor], Info[playerid][MapHide], Info[playerid][ID]);
         mysql_tquery(mysql, query);
 
         Info[playerid][Registered] = registered;
@@ -16400,6 +16632,12 @@ public OnAccountLoad(playerid)
     Info[playerid][JumpExpire] = cache_get_field_content_int(0, "JumpExpire");
     Info[playerid][Friends] = cache_get_field_content_int(0, "Friends");
     Info[playerid][vehLimit] = cache_get_field_content_int(0, "Vehicles");
+    InHouse[playerid] = cache_get_field_content_int(0, "InHouse");
+    cache_get_field_content(0, "PlayerColor", Info[playerid][playerColor], mysql, 16);
+    cache_get_field_content(0, "TextColor", Info[playerid][textColor], mysql, 16);
+    Info[playerid][MapHide] = cache_get_field_content_int(0, "MapHide");
+    cache_get_field_content(0, "Email", Info[playerid][Email], mysql, 35);
+
 
 
     new query[100];
@@ -16479,6 +16717,9 @@ public OnAccountRegister(playerid)
     Info[playerid][Registered] = 1;
     Info[playerid][xLevel] = 1;
     pTeam[playerid] = NO_TEAM;
+
+    format(Info[playerid][playerColor], 16, "0xFFFFFFFF");
+    format(Info[playerid][textColor], 16, "FFFFFF");
 
     new query[94];
     format(query, sizeof(query), "{FF0000}<!> {CC6699}%s has registered to the server! Total players registered - %s", GetName(playerid), cNumber(Info[playerid][ID]));
@@ -16984,13 +17225,11 @@ public OnPlayerLeaveGangZone(playerid, zone)
                         {
                             KillTimer(g_Turf[i][turfTimer]);
                             KillTimer(g_Turf[i][turfAttackTimer]);
-                            g_Turf[i][turfCountDown] = 0;
 
+                            g_Turf[i][turfCountDown] = 0;
                             g_Turf[i][turfTimer] = -1;
                             g_Turf[i][turfState] = TURF_STATE_NORMAL;
                             g_Turf[i][turfAttacker] = NO_TEAM;
-                            g_Turf[i][turfAttackerKills] = 0;
-                            g_Turf[i][turfOwnerKills] = 0;
 
                             foreach(new x : Player)
                             {
@@ -17000,7 +17239,7 @@ public OnPlayerLeaveGangZone(playerid, zone)
                                     GangZoneShowForPlayer(x, g_Turf[i][turfId], COLOR_CHANGE_ALPHA(g_Team[g_Turf[i][turfOwner]][teamColor]));
                                 }
 
-                                if(IsPlayerInGangZone(playerid, i)) 
+                                if(IsPlayerInGangZone(x, i)) 
                                 {
                                     PlayerTextDrawHide(x, CountDownAttack[playerid]);
                                 }
@@ -17022,12 +17261,8 @@ stock IsPlayerInGangZone(playerid, zone)
 
 stock IsPlayerInAnyGangZone(playerid)
 {
-    if (playerid < 0 || playerid >= MAX_PLAYERS) return 0;
-
     for(new i, j = sizeof(g_Turf); i < j; i++) 
-    {
         if (IsPlayerInDynamicArea(playerid, g_Turf[i][areaId])) return 1;
-    }
     return 0;
 }
 
@@ -17049,14 +17284,13 @@ public OnTurfwarEnd(turfid)
         }
     }
 
+    KillTimer(g_Turf[turfid][turfAttackTimer]);
+
     g_Turf[turfid][turfTimer] = -1;
     g_Turf[turfid][turfOwner] = g_Turf[turfid][turfAttacker];
     g_Turf[turfid][turfState] = TURF_STATE_NORMAL;
     g_Turf[turfid][turfAttacker] = NO_TEAM;
-    g_Turf[turfid][turfAttackerKills] = 0;
-    g_Turf[turfid][turfOwnerKills] = 0;
     g_Turf[turfid][turfCountDown] = 0;
-    KillTimer(g_Turf[turfid][turfAttackTimer]);
 
     foreach(new x : Player)
     {
@@ -17071,8 +17305,8 @@ public OnTurfwarEnd(turfid)
 public CountDownTimer(turfid)
 {
     g_Turf[turfid][turfCountDown]--;
-    new string[128];
-    format(string, 128, "~g~Attack: ~w~%d:%02d", g_Turf[turfid][turfCountDown] / 60, g_Turf[turfid][turfCountDown] % 60);
+    new string[30];
+    format(string, sizeof string, "~g~Attack: ~w~%d:%02d", g_Turf[turfid][turfCountDown] / 60, g_Turf[turfid][turfCountDown] % 60);
     foreach(new i : Player)
     {
         if(IsPlayerInGangZone(i, turfid) && pTeam[i] == g_Turf[turfid][turfAttacker] && IsPlayerSpawned(i)
@@ -17149,15 +17383,23 @@ stock TeamColorFP(playerid)
 {
     switch(pTeam[playerid]) 
     {
-        case NO_TEAM: SetPlayerColor(playerid, COLOR_NULL);
-        case GROVE: SetPlayerColor(playerid, COLOR_GROVE);
-        case BALLAS: SetPlayerColor(playerid, COLOR_BALLAS);
-        case VAGOS: SetPlayerColor(playerid, COLOR_VAGOS);
-        case AZTECAS: SetPlayerColor(playerid, COLOR_AZTECAS);
-        case BIKERS: SetPlayerColor(playerid, COLOR_BIKERS);
-        case TRIADS: SetPlayerColor(playerid, COLOR_TRIADS);
-        case MAFIA: SetPlayerColor(playerid, COLOR_MAFIA);
-        case NANG: SetPlayerColor(playerid, COLOR_NANG);
+        case NO_TEAM: {
+
+            if(!strcmp(Info[playerid][playerColor], "-") || !strcmp(Info[playerid][playerColor], "0xFFFFFFFF") || isnull(Info[playerid][playerColor])) {
+
+                format(Info[playerid][playerColor], 16, "0xFFFFFFFF");
+                format(Info[playerid][textColor], 16, "FFFFFF");
+                SetPlayerColor(playerid, 0xFFFFFFFF);
+            }
+        }
+        case GROVE: SetPlayerColor(playerid, COLOR_GROVE), format(Info[playerid][textColor], 16, "009900"), format(Info[playerid][playerColor], 16, "0xFFFFFFFF");
+        case BALLAS: SetPlayerColor(playerid, COLOR_BALLAS), format(Info[playerid][textColor], 16, "CC00CC"), format(Info[playerid][playerColor], 16, "0xCC00CCFF");
+        case VAGOS: SetPlayerColor(playerid, COLOR_VAGOS), format(Info[playerid][textColor], 16, "FFCC00"), format(Info[playerid][playerColor], 16, "0xFFCC00FF");
+        case AZTECAS: SetPlayerColor(playerid, COLOR_AZTECAS), format(Info[playerid][textColor], 16, "00FFFF"), format(Info[playerid][playerColor], 16, "0x00FFFFFF");
+        case BIKERS: SetPlayerColor(playerid, COLOR_BIKERS), format(Info[playerid][textColor], 16, "595959"), format(Info[playerid][playerColor], 16, "0x595959FF");
+        case TRIADS: SetPlayerColor(playerid, COLOR_TRIADS), format(Info[playerid][textColor], 16, "6600FF"), format(Info[playerid][playerColor], 16, "0x6600FFFF");
+        case MAFIA: SetPlayerColor(playerid, COLOR_MAFIA), format(Info[playerid][textColor], 16, "E69500"), format(Info[playerid][playerColor], 16, "0xE69500FF");
+        case NANG: SetPlayerColor(playerid, COLOR_NANG), format(Info[playerid][textColor], 16, "996633"), format(Info[playerid][playerColor], 16, "0x996633FF");
     }
 }
 
@@ -17165,7 +17407,7 @@ stock SendMessageToTeam(team, color, mess[])
 {
     foreach(new i : Player)
     {
-        if(pTeam[i] == team) SendClientMessage(i,color,mess);
+        if(pTeam[i] == team) SendClientMessage(i, color, mess);
     }
 }
 
@@ -18089,13 +18331,13 @@ public LoadProperties()
 			{
 				format(label, sizeof(label), "Property: %s\nPrice: $%s\nOwner: %s",pInfo[id][prName], cNumber(pInfo[id][Price]), pInfo[id][Owner]);
 
-				pInfo[id][OwnedPickup] = CreateDynamicPickup(1272, 1, pInfo[id][PropertyX], pInfo[id][PropertyY], pInfo[id][PropertyZ]);
+				pInfo[id][PropertyPickup] = CreateDynamicPickup(1272, 1, pInfo[id][PropertyX], pInfo[id][PropertyY], pInfo[id][PropertyZ]);
 			}
 			else
 			{
 		 		format(label, sizeof(label), "Property: %s\nPrice: $%s", pInfo[id][prName], cNumber(pInfo[id][Price]));
 
-		    	pInfo[id][AvailablePickup] = CreateDynamicPickup(1273, 1, pInfo[id][PropertyX], pInfo[id][PropertyY], pInfo[id][PropertyZ]);
+		    	pInfo[id][PropertyPickup] = CreateDynamicPickup(1273, 1, pInfo[id][PropertyX], pInfo[id][PropertyY], pInfo[id][PropertyZ]);
 		    	pInfo[id][PropertyMapIcon] = CreateDynamicMapIcon(pInfo[id][PropertyX], pInfo[id][PropertyY], pInfo[id][PropertyZ], 31, 0, 0, 0);
 		    }
 
@@ -18206,27 +18448,13 @@ pUpdateLabel(propertyid)
 	new label[128];
     if(strcmp(pInfo[propertyid][Owner], "-")) 
 	{
-		if(IsValidDynamicPickup(pInfo[propertyid][AvailablePickup]))
-		{
-			DestroyDynamicPickup(pInfo[propertyid][AvailablePickup]);
-			pInfo[propertyid][AvailablePickup] = -1;
-
-			pInfo[propertyid][OwnedPickup] = CreateDynamicPickup(1272, 1, pInfo[propertyid][PropertyX], pInfo[propertyid][PropertyY], pInfo[propertyid][PropertyZ]);
-		    DestroyDynamicMapIcon(pInfo[propertyid][PropertyMapIcon]);
-        }
+        DestroyDynamicMapIcon(pInfo[propertyid][PropertyMapIcon]);
 
 		format(label, sizeof(label), "Property: %s\nPrice: $%s\nOwner: %s", pInfo[propertyid][prName], cNumber(pInfo[propertyid][Price]), pInfo[propertyid][Owner]);
 	}
 	else
 	{
-		if(IsValidDynamicPickup(pInfo[propertyid][OwnedPickup]))
-		{
- 			DestroyDynamicPickup(pInfo[propertyid][OwnedPickup]);			
- 			pInfo[propertyid][OwnedPickup] = -1;
-
-			pInfo[propertyid][AvailablePickup] = CreateDynamicPickup(1273, 1, pInfo[propertyid][PropertyX], pInfo[propertyid][PropertyY], pInfo[propertyid][PropertyZ]);
-		    DestroyDynamicMapIcon(pInfo[propertyid][PropertyMapIcon]);
-        }
+		DestroyDynamicMapIcon(pInfo[propertyid][PropertyMapIcon]);
 
         pInfo[propertyid][PropertyMapIcon] = CreateDynamicMapIcon(pInfo[propertyid][PropertyX], pInfo[propertyid][PropertyY], pInfo[propertyid][PropertyZ], 31, 0, 0, 0);
  		format(label, sizeof(label), "Property: %s\nPrice: $%s", pInfo[propertyid][prName], cNumber(pInfo[propertyid][Price]));
@@ -18835,6 +19063,8 @@ public LoadPlayerVehicles(playerid)
             vInfo[id][vehMod][13] = cache_get_field_content_int(i, "vehMod_14");
             vInfo[id][vehColorOne] = cache_get_field_content_int(i, "vehColorOne");
             vInfo[id][vehColorTwo] = cache_get_field_content_int(i, "vehColorTwo");
+            vInfo[id][vehHydraulics] = cache_get_field_content_int(i, "vehHydraulics");
+            vInfo[id][vehNitro] = cache_get_field_content_int(i, "vehNitro");
             vInfo[id][vehX] = cache_get_field_content_float(i, "vehX");
             vInfo[id][vehY] = cache_get_field_content_float(i, "vehY");
             vInfo[id][vehZ] = cache_get_field_content_float(i, "vehZ");
@@ -18852,6 +19082,16 @@ public LoadPlayerVehicles(playerid)
             SetVehicleParamsEx(vInfo[id][vehSessionID], 0, 0, 0, vInfo[id][vehLock], 0, 0, 0);
             SetVehicleNumberPlate(vInfo[id][vehSessionID], vInfo[id][vehPlate]);
             for(new x = 0; x < 14; x++) if(vInfo[id][vehMod][x] > 0) AddVehicleComponent(vInfo[id][vehSessionID], vInfo[id][vehMod][x]);
+
+            switch(vInfo[id][vehNitro]) {
+
+                case 1: AddVehicleComponent(vInfo[id][vehSessionID], 1009);
+                case 2: AddVehicleComponent(vInfo[id][vehSessionID], 1008);
+                case 3: AddVehicleComponent(vInfo[id][vehSessionID], 1010);
+            }
+
+            if(vInfo[id][vehHydraulics] == 1)
+                AddVehicleComponent(vInfo[id][vehSessionID], 1087);
 
             Iter_Add(PrivateVehicles[playerid], id);
             Iter_Add(ServerVehicles, id);
@@ -18873,11 +19113,12 @@ stock SaveVehicle(vehicleid)
     mysql_format(mysql, query, sizeof(query), "UPDATE `Vehicles` SET `vehName` = '%e', `vehOwner` = '%e', `vehLock` = %i, `vehModel` = %i,\
     `vehPlate` = '%e', `vehMod_1` = %i, `vehMod_2` = %i, `vehMod_3` = %i, `vehMod_4` = %i, `vehMod_5` = %i, `vehMod_6` = %i, `vehMod_7` = %i,\
     `vehMod_8` = %i, `vehMod_9` = %i, `vehMod_10` = %i, `vehMod_11` = %i, `vehMod_12` = %i, `vehMod_13` = %i, `vehMod_14` = %i, `vehColorOne` = %i,\
-    `vehColorTwo` = %i, `vehX` = %f, `vehY` = %f, `vehZ` = %f, `vehA` = %f WHERE `vehID` = %d", vInfo[vehicleid][vehName], vInfo[vehicleid][vehOwner], 
-    vInfo[vehicleid][vehLock], vInfo[vehicleid][vehModel], vInfo[vehicleid][vehPlate], vInfo[vehicleid][vehMod][0], vInfo[vehicleid][vehMod][1], vInfo[vehicleid][vehMod][2], 
-    vInfo[vehicleid][vehMod][3], vInfo[vehicleid][vehMod][4], vInfo[vehicleid][vehMod][5], vInfo[vehicleid][vehMod][6], vInfo[vehicleid][vehMod][7], vInfo[vehicleid][vehMod][8], 
-    vInfo[vehicleid][vehMod][9], vInfo[vehicleid][vehMod][10], vInfo[vehicleid][vehMod][11], vInfo[vehicleid][vehMod][12], vInfo[vehicleid][vehMod][13], vInfo[vehicleid][vehColorOne],
-    vInfo[vehicleid][vehColorTwo], vInfo[vehicleid][vehX], vInfo[vehicleid][vehY], vInfo[vehicleid][vehZ], vInfo[vehicleid][vehA], vInfo[vehicleid][vehID]);
+    `vehColorTwo` = %i, `vehHydraulics` = %i, `vehNitro` = %i, `vehX` = %f, `vehY` = %f, `vehZ` = %f, `vehA` = %f WHERE `vehID` = %d", vInfo[vehicleid][vehName], 
+    vInfo[vehicleid][vehOwner], vInfo[vehicleid][vehLock], vInfo[vehicleid][vehModel], vInfo[vehicleid][vehPlate], vInfo[vehicleid][vehMod][0], vInfo[vehicleid][vehMod][1], 
+    vInfo[vehicleid][vehMod][2], vInfo[vehicleid][vehMod][3], vInfo[vehicleid][vehMod][4], vInfo[vehicleid][vehMod][5], vInfo[vehicleid][vehMod][6], vInfo[vehicleid][vehMod][7],
+    vInfo[vehicleid][vehMod][8], vInfo[vehicleid][vehMod][9], vInfo[vehicleid][vehMod][10], vInfo[vehicleid][vehMod][11], vInfo[vehicleid][vehMod][12], vInfo[vehicleid][vehMod][13], 
+    vInfo[vehicleid][vehColorOne], vInfo[vehicleid][vehColorTwo], vInfo[vehicleid][vehHydraulics], vInfo[vehicleid][vehNitro], vInfo[vehicleid][vehX], vInfo[vehicleid][vehY], 
+    vInfo[vehicleid][vehZ], vInfo[vehicleid][vehA], vInfo[vehicleid][vehID]);
     mysql_tquery(mysql, query);
     return 1;
 }
@@ -18897,6 +19138,7 @@ stock ResetVehicle(vehicleid)
 
     format(vInfo[vehicleid][vehOwner], MAX_PLAYER_NAME, "-");
     format(vInfo[vehicleid][vehPlate], 16, "UG");
+
     vInfo[vehicleid][vehModel] = -1; 
     vInfo[vehicleid][vehLock] = MODE_NOLOCK;
     vInfo[vehicleid][vehPrice] = 0;
@@ -18933,11 +19175,22 @@ createVehicle(vehicleid, Float:itsX, Float:itsY, Float:itsZ, Float:itsA, bool:re
 
     vInfo[vehicleid][vehSessionID] = CreateVehicle(vInfo[vehicleid][vehModel], itsX, itsY, itsZ, itsA, vInfo[vehicleid][vehColorOne], vInfo[vehicleid][vehColorTwo], -1);
     format(vInfo[vehicleid][vehName], MAX_PLAYER_NAME, GetVehicleName(vInfo[vehicleid][vehModel]));
-    SetVehicleParamsEx(vInfo[vehicleid][vehSessionID], 0, 0, 0, 1, 0, 0, 0);
+    SetVehicleToRespawn(vInfo[vehicleid][vehSessionID]);
+    SetVehicleParamsEx(vInfo[vehicleid][vehSessionID], 1, 1, 0, vInfo[vehicleid][vehLock], 0, 0, 0);
     SetVehicleNumberPlate(vInfo[vehicleid][vehSessionID], vInfo[vehicleid][vehPlate]);
     for(new x = 0; x < 14; x++) if(vInfo[vehicleid][vehMod][x] > 0) AddVehicleComponent(vInfo[vehicleid][vehSessionID], vInfo[vehicleid][vehMod][x]);
     ChangeVehicleColor(vInfo[vehicleid][vehSessionID], vInfo[vehicleid][vehColorOne], vInfo[vehicleid][vehColorTwo]);
-    SetVehicleToRespawn(vInfo[vehicleid][vehSessionID]);
+
+    switch(vInfo[vehicleid][vehNitro]) {
+
+        case 1: AddVehicleComponent(vInfo[vehicleid][vehSessionID], 1009);
+        case 2: AddVehicleComponent(vInfo[vehicleid][vehSessionID], 1008);
+        case 3: AddVehicleComponent(vInfo[vehicleid][vehSessionID], 1010);
+    }
+    if(vInfo[vehicleid][vehHydraulics] == 1) {
+
+        AddVehicleComponent(vInfo[vehicleid][vehSessionID], 1087);
+    }
     return 1;
 }
 
@@ -19277,4 +19530,3 @@ StopLoopingAnim(playerid)
     PlayerUsingLoopingAnim[playerid] = 0;
     ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, 0, 0, 0, 0, 0);
 }
-//
