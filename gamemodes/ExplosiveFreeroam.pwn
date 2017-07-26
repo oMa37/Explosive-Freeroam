@@ -28,7 +28,7 @@
     #include "./includes/ZonesInteriors.pwn"
     #include "./includes/Objects.pwn"
 
-//-------------: MySQL Configrations :---------------//
+//-------------: MySQL Configurations :---------------//
 
     #define    MYSQL_HOST        "localhost"
     #define    MYSQL_USER        "root"
